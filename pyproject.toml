@@ -15,8 +15,9 @@ dev = [
 ]
 
 [tool.ruff]
+src = ["src"] # Treat src/ as a source root for Python imports.
 # Directories to lint
-include = ["src", "tests"]
+# include = ["src", "tests"]
 
 # Files/directories to ignore
 exclude = [
@@ -27,5 +28,7 @@ exclude = [
 ]
 
 line-length = 88
+
+[tool.ruff.lint]
 extend-select = ["I"]  # isort
 ignore = ["I001"]  # unsorted-imports

@@ -55,11 +55,11 @@ def generate_radar_detections_df(
 
     Columns include:
       - time_s, scan_idx, target_id
-      - z_x_m, z_y_m (measured)
-      - z_true_x_m, z_true_y_m
-      - x_true_m, y_true_m, vx_true_mps, vy_true_mps
-      - R_true_xx, R_true_xy, R_true_yx, R_true_yy
-      - R_rep_xx,  R_rep_xy,  R_rep_yx,  R_rep_yy
+      - z_x_m, z_y_m (measured)                         # measurement (what the radar reports)
+      - z_true_x_m, z_true_y_m                          # truth measurement (noise-free position)
+      - x_true_m, y_true_m, vx_true_mps, vy_true_mps    # truth state (used for evaluation, not available to tracker)
+      - R_true_xx, R_true_xy, R_true_yx, R_true_yy      # true measurement covariance (actual sensor noise used to corrupt z)
+      - R_rep_xx,  R_rep_xy,  R_rep_yx,  R_rep_yy       # reported measurement covariance (what radar claims; used in gating/association)
     """
     rng = np.random.default_rng(seed)
 
@@ -112,30 +112,35 @@ def generate_radar_detections_df(
 
             rows.append(
                 {
-                    "time_s": float(t_s),
-                    "scan_idx": int(k),
-                    "target_id": spec.target_id,
-                    # measurement
-                    "z_x_m": float(z[0]),
-                    "z_y_m": float(z[1]),
-                    # truth measurement
-                    "z_true_x_m": float(z_true[0]),
-                    "z_true_y_m": float(z_true[1]),
-                    # truth state
-                    "x_true_m": float(x_true[0]),
-                    "y_true_m": float(x_true[1]),
-                    "vx_true_mps": float(x_true[2]),
-                    "vy_true_mps": float(x_true[3]),
-                    # true covariance
-                    "R_true_xx": float(R_true[0, 0]),
-                    "R_true_xy": float(R_true[0, 1]),
-                    "R_true_yx": float(R_true[1, 0]),
-                    "R_true_yy": float(R_true[1, 1]),
-                    # reported covariance
-                    "R_rep_xx": float(R_rep[0, 0]),
-                    "R_rep_xy": float(R_rep[0, 1]),
-                    "R_rep_yx": float(R_rep[1, 0]),
-                    "R_rep_yy": float(R_rep[1, 1]),
+                    "time_s": float(t_s),                 # measurement timestamp [s]
+                    "scan_idx": int(k),                   # radar scan index (discrete time step)
+                    "target_id": spec.target_id,          # ground-truth target identifier
+
+                    # measurement (what the radar reports)
+                    "z_x_m": float(z[0]),                 # measured x position [m]
+                    "z_y_m": float(z[1]),                 # measured y position [m]
+
+                    # truth measurement (noise-free position)
+                    "z_true_x_m": float(z_true[0]),       # true x position at measurement time [m]
+                    "z_true_y_m": float(z_true[1]),       # true y position at measurement time [m]
+
+                    # truth state (used for evaluation, not available to tracker)
+                    "x_true_m": float(x_true[0]),         # true x position [m]
+                    "y_true_m": float(x_true[1]),         # true y position [m]
+                    "vx_true_mps": float(x_true[2]),      # true x velocity [m/s]
+                    "vy_true_mps": float(x_true[3]),      # true y velocity [m/s]
+
+                    # true measurement covariance (actual sensor noise used to corrupt z)
+                    "R_true_xx": float(R_true[0, 0]),     # var(x) of true measurement noise [m^2]
+                    "R_true_xy": float(R_true[0, 1]),     # cov(x,y) of true measurement noise [m^2]
+                    "R_true_yx": float(R_true[1, 0]),     # cov(y,x) of true measurement noise [m^2]
+                    "R_true_yy": float(R_true[1, 1]),     # var(y) of true measurement noise [m^2]
+
+                    # reported measurement covariance (what radar claims; used in gating/association)
+                    "R_rep_xx": float(R_rep[0, 0]),       # reported var(x) [m^2]
+                    "R_rep_xy": float(R_rep[0, 1]),       # reported cov(x,y) [m^2]
+                    "R_rep_yx": float(R_rep[1, 0]),       # reported cov(y,x) [m^2]
+                    "R_rep_yy": float(R_rep[1, 1]),       # reported var(y) [m^2]
                 }
             )
 
