@@ -1,5 +1,6 @@
 from fusion.detections import generate_radar_detections_df
 from fusion.gating import gate_detections
+from fusion.jpda import jpda_associate
 import numpy as np
 
 
@@ -35,3 +36,10 @@ if __name__ == "__main__":
     view = gated_pairs_df[gated_pairs_df["scan_idx"] == scan_to_view]
     print("\nGating results (first rows) for scan", scan_to_view)
     print(view[["scan_idx", "track_id", "det_target_id", "d2", "passed_gate"]].head(30).to_string(index=False))
+
+    # Step 3: JPDA-style soft association
+    assoc_df = jpda_associate(gated_pairs_df, p_d=0.9, lambda_fa=1e-6)
+
+    assoc_view = assoc_df[assoc_df["scan_idx"] == scan_to_view]
+    print("\nJPDA association (top rows) for scan", scan_to_view)
+    print(assoc_view.head(30).to_string(index=False))

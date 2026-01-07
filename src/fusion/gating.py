@@ -93,7 +93,7 @@ def predict_tracks(tracks: Dict[str, Track], *, dt: float, sigma_a: float) -> Di
 
 
 # ----------------------------
-# Gating
+# Step 2: Gating
 # ----------------------------
 def gate_detections(
     df: pd.DataFrame,
