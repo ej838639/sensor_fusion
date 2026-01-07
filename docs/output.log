@@ -1,0 +1,77 @@
+> uv run python src/app.py
+
+ time_s  scan_idx          target_id        z_x_m       z_y_m  z_true_x_m  z_true_y_m  x_true_m  y_true_m  vx_true_mps  vy_true_mps  R_true_xx  R_true_xy  R_true_yx  R_true_yy  R_rep_xx  R_rep_xy  R_rep_yx  R_rep_yy
+    0.0         0 A_lowNoise_highCov     1.493728   -1.370689         0.0         0.0       0.0       0.0         25.0         10.0       25.0        0.0        0.0       25.0    2500.0       0.0       0.0    2500.0
+    0.0         0 B_highNoise_lowCov  1981.813169 -539.665862      2000.0      -500.0    2000.0    -500.0        -15.0         20.0     1600.0        0.0        0.0     1600.0      25.0       0.0       0.0      25.0
+    0.0         0  C_lowNoise_lowCov -1493.298924 1197.538967     -1500.0      1200.0   -1500.0    1200.0         18.0        -12.0       25.0        0.0        0.0       25.0      25.0       0.0       0.0      25.0
+    1.0         1 A_lowNoise_highCov    27.449210   11.784435        25.0        10.0      25.0      10.0         25.0         10.0       25.0        0.0        0.0       25.0    2500.0       0.0       0.0    2500.0
+    1.0         1 B_highNoise_lowCov  1947.781278 -481.170073      1985.0      -480.0    1985.0    -480.0        -15.0         20.0     1600.0        0.0        0.0     1600.0      25.0       0.0       0.0      25.0
+    1.0         1  C_lowNoise_lowCov -1488.721073 1185.711921     -1482.0      1188.0   -1482.0    1188.0         18.0        -12.0       25.0        0.0        0.0       25.0      25.0       0.0       0.0      25.0
+    2.0         2 A_lowNoise_highCov    43.552311   10.791325        50.0        20.0      50.0      20.0         25.0         10.0       25.0        0.0        0.0       25.0    2500.0       0.0       0.0    2500.0
+    2.0         2 B_highNoise_lowCov  1919.302141 -449.149426      1970.0      -460.0    1970.0    -460.0        -15.0         20.0     1600.0        0.0        0.0     1600.0      25.0       0.0       0.0      25.0
+    2.0         2  C_lowNoise_lowCov -1464.934655 1163.416201     -1464.0      1176.0   -1464.0    1176.0         18.0        -12.0       25.0        0.0        0.0       25.0      25.0       0.0       0.0      25.0
+
+Per-target summary:
+                    sigma_true      sigma_rep          err_x                 err_y           
+                         mean  std      mean  std      mean        std       mean        std
+target_id                                                                                   
+A_lowNoise_highCov        5.0  0.0      50.0  0.0  0.776616   3.419562  -0.618196   3.889767
+B_highNoise_lowCov       40.0  0.0       5.0  0.0  0.492025  45.506758 -13.125596  26.222565
+C_lowNoise_lowCov         5.0  0.0       5.0  0.0  1.946939   4.586452  -1.989346   5.923003
+
+Gating results (first rows) for scan 1
+ scan_idx           track_id      det_target_id          d2  passed_gate
+        1 A_lowNoise_highCov A_lowNoise_highCov    0.001800         True
+        1 A_lowNoise_highCov  C_lowNoise_lowCov 1399.352446        False
+        1 A_lowNoise_highCov B_highNoise_lowCov 1500.175558        False
+        1 B_highNoise_lowCov B_highNoise_lowCov    0.528179         True
+        1 B_highNoise_lowCov A_lowNoise_highCov  798.756340        False
+        1 B_highNoise_lowCov  C_lowNoise_lowCov 5653.303227        False
+        1  C_lowNoise_lowCov  C_lowNoise_lowCov    0.019201         True
+        1  C_lowNoise_lowCov A_lowNoise_highCov  717.988329        False
+        1  C_lowNoise_lowCov B_highNoise_lowCov 5542.149642        False
+
+JPDA association (top rows) for scan 1
+ scan_idx           track_id  det_row      beta_ij  beta_0
+        1 A_lowNoise_highCov        3 1.000000e+00     0.0
+        1 A_lowNoise_highCov        4 1.112112e-18     0.0
+        1 A_lowNoise_highCov        5 1.112112e-18     0.0
+        1 B_highNoise_lowCov        4 1.000000e+00     0.0
+        1 B_highNoise_lowCov        3 1.446939e-18     0.0
+        1 B_highNoise_lowCov        5 1.446939e-18     0.0
+        1  C_lowNoise_lowCov        5 1.000000e+00     0.0
+        1  C_lowNoise_lowCov        3 1.121830e-18     0.0
+        1  C_lowNoise_lowCov        4 1.121830e-18     0.0
+
+Step 4 track estimates (first rows):
+ scan_idx           track_id      x_hat_m     y_hat_m  vx_hat_mps  vy_hat_mps  sigma_x_m  sigma_y_m
+        0 A_lowNoise_highCov     0.746864   -0.685345   25.000000   10.000000  35.355339  35.355339
+        0 B_highNoise_lowCov  1981.993236 -539.273131  -15.000000   20.000000   4.975186   4.975186
+        0  C_lowNoise_lowCov -1493.365271 1197.563334   18.000000  -12.000000   4.975186   4.975186
+        1 A_lowNoise_highCov    26.343862   10.180786   25.044435   10.064467  29.609606  29.609606
+        1 B_highNoise_lowCov  1950.920002 -487.395101  -28.376278   46.529160   4.575030   4.579913
+        1  C_lowNoise_lowCov -1486.495143 1185.687157    9.051761  -11.900448   4.564362   4.564362
+        2 A_lowNoise_highCov    48.985115   17.345871   24.687756    9.634142  27.689591  27.689591
+        2 B_highNoise_lowCov  1920.042316 -447.523529  -29.815341   42.193656   4.449055   4.447853
+        2  C_lowNoise_lowCov -1467.695989 1165.705518   14.675585  -16.562946   4.413750   4.413750
+        3 A_lowNoise_highCov    74.001440   28.066495   24.750115    9.840347  27.519709  27.519709
+        3 B_highNoise_lowCov  1927.093589 -465.315250    0.092004   -6.462431   4.505658   4.504891
+        3  C_lowNoise_lowCov -1444.596504 1156.537727   18.344794  -13.341828   4.133662   4.133662
+        4 A_lowNoise_highCov   100.512526   37.650682   25.102411    9.789100  27.863741  27.863741
+        4 B_highNoise_lowCov  1941.341956 -427.153789   11.659643   30.032118   4.531567   4.533627
+        4  C_lowNoise_lowCov -1427.076577 1152.604035   18.047014   -9.945459   3.883151   3.883151
+        5 A_lowNoise_highCov   126.778693   48.437606   25.327918    9.982454  28.109981  28.109981
+        5 B_highNoise_lowCov  1995.827641 -374.358988   46.563457   48.598874   4.538886   4.537304
+        5  C_lowNoise_lowCov -1409.355683 1142.781240   17.941243   -9.905675   3.692842   3.692842
+        6 A_lowNoise_highCov   152.519192   58.813529   25.402755   10.053824  28.082138  28.082138
+        6 B_highNoise_lowCov  1980.766027 -392.647234   -3.604272   -5.829898   4.536926   4.539751
+
+Step 5 example CAT062 (debug) for scan 1 track A_lowNoise_highCov (# 1 )
+  I062/010: {'SAC': 1, 'SIC': 7, 'raw': b'\x01\x07'}
+  I062/040: {'track_number': 1, 'raw': b'\x00\x01'}
+  I062/070: {'time_s': 1.0, 'time_q_1_128s': 128, 'raw': b'\x00\x00\x80'}
+  I062/080 raw: 0300
+  I062/100: {'x_m': 26.343862281862414, 'y_m': 10.180786135400753, 'x_q_0_5m': 53, 'y_q_0_5m': 20, 'raw': b'\x00\x005\x00\x00\x14'}
+  I062/185: {'vx_mps': 25.044434988356358, 'vy_mps': 10.064466685997061, 'vx_q_0_25mps': 100, 'vy_q_0_25mps': 40, 'raw': b'\x00d\x00('}
+  I062/500: {'sigma_x_m': 29.60960627643006, 'sigma_y_m': 29.60960627643004, 'cov_xy_m2': -7.077304629054091e-13, 'cov_component_m': -8.412671768858031e-07, 'APC_x_q_0_5m': 59, 'APC_y_q_0_5m': 59, 'COV_q_0_5m': 0, 'raw': b'\xc0\x00\x00;\x00;\x00\x00'}
+  debug_hex: 3e000a00020107002800020001004600030000800050000203000064000600003500001400b900040064002801f40008c000003b003b0000
