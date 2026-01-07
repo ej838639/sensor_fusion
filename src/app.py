@@ -2,6 +2,7 @@ from fusion.detections import generate_radar_detections_df
 from fusion.gating import gate_detections
 from fusion.jpda import jpda_associate
 from fusion.kalman import KFState, IMMState, KalmanCV, IMMCV, TrackFilter
+from fusion.asterix import TrackStatusI062_080, serialize_items_debug, system_track_to_cat062
 
 import numpy as np
 import pandas as pd
@@ -99,6 +100,12 @@ if __name__ == "__main__":
                 state_kf=KFState(x=x0.copy(), P=init_P.copy()),
             )
 
+    # Stable Track Number assignment (CAT062 I062/040)
+    track_number_map: dict[str, int] = {tid: i + 1 for i, tid in enumerate(sorted(filters.keys()))}
+
+    # Step 5 output collection (CAT062 items + debug bytes)
+    cat062_rows: list[dict] = []
+
     # Run filter updates per scan using JPDA association probabilities.
     # IMPORTANT: df index must remain intact because assoc_df.det_row refers to df.loc[det_row].
     track_rows: list[dict] = []
@@ -132,6 +139,7 @@ if __name__ == "__main__":
                 tf.update_jpda(zs=zs, Rs=Rs, betas=betas, beta0=beta0)
 
             s = tf.fused_state()
+
             track_rows.append(
                 {
                     "scan_idx": int(scan_idx),
@@ -145,6 +153,59 @@ if __name__ == "__main__":
                 }
             )
 
+            # ============================================================
+            # Step 5: System tracks -> ASTERIX CAT062 fields (debug-friendly)
+            # ============================================================
+            # Track Status: mark first 2 scans as tentative (CNF=1), then confirmed (CNF=0)
+            status = TrackStatusI062_080(
+                mon=0,  # multi-sensor (set to 1 if you want mono-sensor)
+                cnf=1 if int(scan_idx) < 2 else 0,
+                sim=0,
+                include_first_extent=True,
+            )
+
+            cat062_items = system_track_to_cat062(
+                sac=1,
+                sic=7,
+                track_number=int(track_number_map[tid]),
+                time_s=float(scan_idx),
+                state_xyvv=s.x,
+                cov_xyvv=s.P,
+                status=status,
+            )
+
+            cat062_debug_bytes = serialize_items_debug(cat062_items)
+            cat062_rows.append(
+                {
+                    "scan_idx": int(scan_idx),
+                    "track_id": tid,
+                    "track_number": int(track_number_map[tid]),
+                    "cat062_items": cat062_items,
+                    "cat062_debug_hex": cat062_debug_bytes.hex(),
+                }
+            )
+
     tracks_df = pd.DataFrame(track_rows).sort_values(["scan_idx", "track_id"]).reset_index(drop=True)
     print("\nStep 4 track estimates (first rows):")
     print(tracks_df.head(20).to_string(index=False))
+
+    # ----------------------------
+    # Step 5: Show one example CAT062 record
+    # ----------------------------
+    cat062_df = pd.DataFrame(cat062_rows)
+
+    example = cat062_df[(cat062_df["scan_idx"] == scan_to_view)].head(1)
+    if not example.empty:
+        row = example.iloc[0]
+        items = row["cat062_items"]
+        print("\nStep 5 example CAT062 (debug) for scan", int(row["scan_idx"]), "track", row["track_id"], "(#", int(row["track_number"]), ")")
+        print("  I062/010:", items.get("I062/010"))
+        print("  I062/040:", items.get("I062/040"))
+        print("  I062/070:", items.get("I062/070"))
+        print("  I062/080 raw:", items.get("I062/080", {}).get("raw", b"").hex())
+        print("  I062/100:", items.get("I062/100"))
+        print("  I062/185:", items.get("I062/185"))
+        print("  I062/500:", items.get("I062/500"))
+        print("  debug_hex:", row["cat062_debug_hex"][:120] + ("..." if len(row["cat062_debug_hex"]) > 120 else ""))
+    else:
+        print("\nStep 5: No CAT062 records found to display.")
